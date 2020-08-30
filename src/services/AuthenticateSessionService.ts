@@ -1,5 +1,7 @@
 import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
+import authConfig from '../config/auth';
 
 import User from '../models/User';
 
@@ -8,7 +10,8 @@ interface Request {
   password : string;
 }
 interface Response {
-  user : User
+  user : User;
+  token : string;
  }
 
 class AuthenticateSessionService {
@@ -29,7 +32,14 @@ class AuthenticateSessionService {
       throw new Error('Email or password invalid');
     }
 
-    return { user };
+    const { secret, expiresIn } = authConfig.jwt;
+
+    const token = sign({}, secret, {
+      subject: user.id,
+      expiresIn,
+    });
+
+    return { user, token };
   }
 }
 
