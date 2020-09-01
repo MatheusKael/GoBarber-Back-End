@@ -1,5 +1,6 @@
 import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 
 import Appointment from '../models/Appointments';
 import AppointmentRepository from '../repositories/AppointmentsRepository';
@@ -20,7 +21,7 @@ class CreateAppointment {
     );
 
     if (findAppointmentInSameDate) {
-      throw Error('This Date have been already booked');
+      throw new AppError('This Date have been already booked');
     }
 
     const appointment = appointmentRepository.create({
