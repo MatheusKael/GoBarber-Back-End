@@ -18,6 +18,7 @@
     "class-methods-use-this": "off",
     "comma-dangle": "off",
     "semi": "off",
+    "no-useless-constructor": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
