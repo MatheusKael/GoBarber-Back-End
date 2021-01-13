@@ -1,16 +1,22 @@
 import { hash } from 'bcryptjs';
+import { inject, injectable } from 'tsyringe';
+
 import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
-import IUsersRepository from '../Repositories/IUsersRepository';
+import IUsersRepository from '../repositories/IUsersRepository';
+import UsersRepository from '../infra/typeorm/repositories/UsersRepository';
 
 interface Request {
   name: string;
   email: string;
   password: string;
 }
-
+@injectable()
 class CreateUserService {
-  constructor(private usersRepository: IUsersRepository) {}
+  constructor(
+    @inject(UsersRepository)
+    private usersRepository: IUsersRepository
+  ) {}
 
   /**
    * async :execute

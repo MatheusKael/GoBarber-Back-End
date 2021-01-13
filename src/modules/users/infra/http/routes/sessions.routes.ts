@@ -1,34 +1,9 @@
-import { Router, Request } from 'express';
-import AuthenticateSessionService from '@modules/users/services/AuthenticateSessionService';
-import User from '@modules/users/infra/typeorm/entities/User';
-import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
+import { Router } from 'express';
+import UsersSessionsController from '../controllers/UsersSessionsController';
 
 const sessionRouter = Router();
-class UserMap {
-  public static toDTO(user: User) {
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
-  }
-}
-sessionRouter.post('/', async (request: Request, response) => {
-  const { email, password } = request.body;
-  const userRepository = new UsersRepository();
+const usersSessionsController = new UsersSessionsController();
 
-  const authenticate = new AuthenticateSessionService(userRepository);
-
-  const { user, token } = await authenticate.execute({
-    email,
-    password,
-  });
-
-  const UserMapped = UserMap.toDTO(user);
-
-  return response.json({ UserMapped, token });
-});
+sessionRouter.post('/', usersSessionsController.create);
 
 export default sessionRouter;
