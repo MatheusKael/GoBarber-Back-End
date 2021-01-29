@@ -3,14 +3,16 @@ import { inject, injectable } from 'tsyringe';
 // import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
 
 import AppError from '@shared/errors/AppError';
-import IUsersRepository from '../repositories/IUsersRepository';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
-import IUserTokensRepository from '../repositories/IUserTokensRepository';
+import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository';
+
 interface Request {
   email: string;
 }
+
 @injectable()
-class CreateUserService {
+class SendForgotPasswordEmailService {
   constructor(
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
@@ -18,27 +20,24 @@ class CreateUserService {
     @inject('MailProvider')
     private mailProvider: IMailProvider,
 
-    @inject('UsersTokensRepository')
-    private userTokensRepository: IUserTokensRepository
+    @inject('UserTokenRepository')
+    private userTokenRepository: IUserTokensRepository
   ) {}
 
   /**
    * async :execute
   Promise<void>  */
   public async execute({ email }: Request): Promise<void> {
-    const emailExist = await this.usersRepository.findByEmail(email);
+    const user = await this.usersRepository.findByEmail(email);
 
-    if (!emailExist) {
+    if (!user) {
       throw new AppError('User does not exists');
     }
-
-    await this.userTokensRepository.generate(emailExist.id);
-
-    this.mailProvider.sendMail(
+    const { token } = await this.userTokenRepository.generate(user.id);
+    await this.mailProvider.sendMail(
       email,
-      'Email de recuperacao de senha foi recebido'
-    );
+      `Email de recuperacao de senha foi recebido ${token}`    );
   }
 }
 
-export default CreateUserService;
+export default SendForgotPasswordEmailService;
