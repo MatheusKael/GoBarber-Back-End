@@ -1,16 +1,16 @@
 import AppError from '@shared/errors/AppError';
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
-import UpdataProfileService from './UpdateProfileService';
+import UpdateProfileService from './UpdateProfileService';
 
 let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
-let updateProfile: UpdataProfileService;
+let updateProfile: UpdateProfileService;
 describe('UpdateAvatar', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeHashProvider = new FakeHashProvider();
-    updateProfile = new UpdataProfileService(
+    updateProfile = new UpdateProfileService(
       fakeUsersRepository,
       fakeHashProvider
     );
@@ -30,6 +30,15 @@ describe('UpdateAvatar', () => {
 
     expect(updatedUser.name).toBe('user2');
     expect(updatedUser.email).toBe('user2@example.com');
+  });
+  it('should not  be able to update profile from undefined user', async () => {
+    expect(
+      updateProfile.execute({
+        user_id: 'teste',
+        email: 'user@example.com',
+        name: 'user',
+      })
+    ).rejects.toBeInstanceOf(AppError);
   });
   it('should not be able to update email to another used email', async () => {
     await fakeUsersRepository.create({
