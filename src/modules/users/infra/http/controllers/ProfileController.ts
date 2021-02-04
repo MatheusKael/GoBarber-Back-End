@@ -13,8 +13,9 @@ export default class ProfileController {
     const showProfile = container.resolve(ShowProfileService);
 
     const user = await showProfile.execute({ user_id });
+    const UserWithoutPassword = userDTO.toDTO(user);
 
-    return response.json(user);
+    return response.json(UserWithoutPassword);
   }
 
   public async update(request: Request, response: Response): Promise<Response> {
