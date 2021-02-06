@@ -3,7 +3,7 @@ import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentRep
 
 let fakeAppointmentsRepository: FakeAppointmentsRepository;
 let listProviderMonthAvailability: ListProviderMonthAvailabilityService;
-describe('ListProviderAvailabilty', () => {
+describe('ListProviderMonthAvailabilty', () => {
   beforeEach(() => {
     fakeAppointmentsRepository = new FakeAppointmentsRepository();
     listProviderMonthAvailability = new ListProviderMonthAvailabilityService(
