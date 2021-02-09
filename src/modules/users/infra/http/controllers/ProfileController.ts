@@ -2,9 +2,7 @@ import UpdateProfileService from '@modules/users/services/UpdateProfileService';
 import ShowProfileService from '@modules/users/services/ShowProfileService';
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import UserDTO from '@modules/users/dtos/UserDTO';
-
-const userDTO = new UserDTO();
+import { classToClass } from 'class-transformer';
 
 export default class ProfileController {
   public async show(request: Request, response: Response): Promise<Response> {
@@ -13,9 +11,8 @@ export default class ProfileController {
     const showProfile = container.resolve(ShowProfileService);
 
     const user = await showProfile.execute({ user_id });
-    const UserWithoutPassword = userDTO.toDTO(user);
 
-    return response.json(UserWithoutPassword);
+    return response.json(classToClass(user));
   }
 
   public async update(request: Request, response: Response): Promise<Response> {
@@ -33,9 +30,7 @@ export default class ProfileController {
         password,
       });
 
-      const UserWithoutPassword = userDTO.toDTO(user);
-
-      return response.json(UserWithoutPassword);
+      return response.json(classToClass(user));
     } catch (err) {
       return response.status(400).json({ error: err.message });
     }
