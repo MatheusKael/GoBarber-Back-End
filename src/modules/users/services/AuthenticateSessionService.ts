@@ -42,6 +42,10 @@ class AuthenticateSessionService {
 
     const { secret, expiresIn } = authConfig.jwt;
 
+    if (!secret) {
+      throw new Error('Secret doenst exist');
+    }
+
     const token = sign({}, secret, {
       subject: user.id,
       expiresIn,

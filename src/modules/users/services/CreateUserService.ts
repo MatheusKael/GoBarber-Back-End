@@ -4,6 +4,7 @@ import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface Request {
   name: string;
@@ -17,12 +18,11 @@ class CreateUserService {
     private usersRepository: IUsersRepository,
 
     @inject('HashProvider')
-    private hashProvider: IHashProvider
+    private hashProvider: IHashProvider,
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider
   ) {}
 
-  /**
-   * async :execute
-  Promise<void>  */
   public async execute({ name, email, password }: Request): Promise<User> {
     const checkEmailExists = await this.usersRepository.findByEmail(email);
 
@@ -37,6 +37,8 @@ class CreateUserService {
       email,
       password: hashedPassword,
     });
+
+    await this.cacheProvider.invalidatePrefix('providers-list');
 
     return user;
   }
