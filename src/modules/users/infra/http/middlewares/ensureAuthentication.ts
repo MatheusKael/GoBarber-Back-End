@@ -23,6 +23,10 @@ function ensureAuthentication(
   const [, token] = authHeader.split(' ');
   const { secret } = authConfig.jwt;
 
+  if (!secret) {
+    throw new AppError('Secret not founded');
+  }
+
   try {
     const decoded = verify(token, secret);
 
