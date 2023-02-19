@@ -28,7 +28,7 @@
     "mime": "^2.5.0",
     "mongodb": "^3.6.4",
     "multer": "^1.4.2",
-    "nodemailer": "^6.4.17",
+    "nodemailer": "^6.9.1",
     "pg": "^8.3.2",
     "rate-limiter-flexible": "^2.2.1",
     "redis": "^3.0.2",
